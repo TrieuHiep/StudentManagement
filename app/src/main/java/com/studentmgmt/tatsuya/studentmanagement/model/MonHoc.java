@@ -39,11 +39,7 @@ public class MonHoc implements Serializable {
 
     @Override
     public String toString() {
-        return "MonHoc{" +
-                "maMH='" + maMH + '\'' +
-                ", tenMH='" + tenMH + '\'' +
-                ", soTC=" + soTC +
-                '}';
+        return maMH + " - " + tenMH;
     }
 
     public void setSoTC(int soTC) {

@@ -11,10 +11,10 @@ import com.studentmgmt.tatsuya.studentmanagement.utils.SQLiteConnector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentDAOImpl implements SVDAO {
+public class SinhVienDAOImpl implements SVDAO {
     private SQLiteConnector connector;
 
-    public StudentDAOImpl(SQLiteConnector connector) {
+    public SinhVienDAOImpl(SQLiteConnector connector) {
         this.connector = connector;
     }
 

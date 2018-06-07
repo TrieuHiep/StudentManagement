@@ -43,10 +43,6 @@ public class SinhVien implements Serializable {
 
     @Override
     public String toString() {
-        return "SinhVien{" +
-                "maSV=" + maSV +
-                ", tenSV='" + tenSV + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return maSV + " - " + tenSV;
     }
 }

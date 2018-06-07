@@ -1,29 +1,91 @@
 package com.studentmgmt.tatsuya.studentmanagement;
 
-import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.*;
+import com.studentmgmt.tatsuya.studentmanagement.adapter.BDAdapter;
 import com.studentmgmt.tatsuya.studentmanagement.dao.BangDiemDAO;
 import com.studentmgmt.tatsuya.studentmanagement.dao.MonHocDAO;
 import com.studentmgmt.tatsuya.studentmanagement.dao.SVDAO;
 import com.studentmgmt.tatsuya.studentmanagement.daoimpl.BangDiemDAOImpl;
 import com.studentmgmt.tatsuya.studentmanagement.daoimpl.MonHocDAOImpl;
-import com.studentmgmt.tatsuya.studentmanagement.daoimpl.StudentDAOImpl;
+import com.studentmgmt.tatsuya.studentmanagement.daoimpl.SinhVienDAOImpl;
 import com.studentmgmt.tatsuya.studentmanagement.model.BangDiem;
 import com.studentmgmt.tatsuya.studentmanagement.model.MonHoc;
 import com.studentmgmt.tatsuya.studentmanagement.model.SinhVien;
 import com.studentmgmt.tatsuya.studentmanagement.utils.SQLiteConnector;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Spinner spnSV;
+    private Spinner spnMH;
+    private EditText txtScore;
+    private Button btnAddScore;
+    private ListView listViewBD;
+
+    private SVDAO svdao;
+    private MonHocDAO monHocDAO;
+    private BangDiemDAO bangDiemDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.svdao = new SinhVienDAOImpl(new SQLiteConnector(this));
+        this.monHocDAO = new MonHocDAOImpl(new SQLiteConnector(this));
+        this.bangDiemDAO = new BangDiemDAOImpl(new SQLiteConnector(this));
+        initComponents();
+    }
 
-        SVDAO svdao = new StudentDAOImpl(new SQLiteConnector(this));
+    private void initComponents() {
+        this.spnSV = super.findViewById(R.id.spinnerSV);
+        this.spnMH = super.findViewById(R.id.spinnerMH);
+        this.txtScore = super.findViewById(R.id.txtDiemSV);
+        this.btnAddScore = super.findViewById(R.id.btnAddBD);
+        this.listViewBD = super.findViewById(R.id.listBD);
+
+        List<SinhVien> listSV = svdao.getAll();
+        List<MonHoc> listMonHoc = monHocDAO.getAll();
+        List<BangDiem> listBD = bangDiemDAO.getAll();
+
+        ArrayAdapter<SinhVien> svAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listSV);
+        svAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.spnSV.setAdapter(svAdapter);
+
+        ArrayAdapter<MonHoc> mhAdapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listMonHoc);
+        mhAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        this.spnMH.setAdapter(mhAdapter);
+
+        BDAdapter bdAdapter = new BDAdapter(this,R.layout.bd_line,listBD);
+        this.listViewBD.setAdapter(bdAdapter);
+
+
+        this.btnAddScore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SinhVien targetSV = (SinhVien) spnSV.getSelectedItem();
+                MonHoc monHoc = (MonHoc) spnMH.getSelectedItem();
+                int score = Integer.parseInt(txtScore.getText().toString().trim());
+                BangDiem bd = new BangDiem(targetSV, monHoc, score);
+                bangDiemDAO.addBD(bd);
+                for (BangDiem b : bangDiemDAO.getAll()) {
+                    Log.e("BANGDIEM", b.getSinhVien().toString());
+                    Log.e("BANGDIEM", b.getMonHoc().toString());
+                    Log.e("BANGDIEM", b.getDiem() + "");
+                }
+                listViewBD.setAdapter(new BDAdapter(MainActivity.this,R.layout.bd_line, bangDiemDAO.getAll()));
+            }
+        });
+    }
+
+    private void initCase() {
+        SVDAO svdao = new SinhVienDAOImpl(new SQLiteConnector(this));
         MonHocDAO monHocDAO = new MonHocDAOImpl(new SQLiteConnector(this));
         BangDiemDAO bangDiemDAO = new BangDiemDAOImpl(new SQLiteConnector(this));
 
@@ -49,16 +111,16 @@ public class MainActivity extends AppCompatActivity {
             BangDiem bangDiem = new BangDiem(sv, monHoc, 10);
             bangDiemDAO.addBD(bangDiem);
 
-            for (BangDiem bd : bangDiemDAO.getAll()) {
-                Log.e("BANGDIEM", bd.getSinhVien().toString());
-                Log.e("BANGDIEM", bd.getMonHoc().toString());
-                Log.e("BANGDIEM", bd.getDiem() + "");
-            }
+
         } catch (Exception e) {
             Toast.makeText(this, "records have already inserted", Toast.LENGTH_SHORT).show();
         }
 
-
+        for (BangDiem bd : bangDiemDAO.getAll()) {
+            Log.e("BANGDIEM", bd.getSinhVien().toString());
+            Log.e("BANGDIEM", bd.getMonHoc().toString());
+            Log.e("BANGDIEM", bd.getDiem() + "");
+        }
         /*
         exception case
 

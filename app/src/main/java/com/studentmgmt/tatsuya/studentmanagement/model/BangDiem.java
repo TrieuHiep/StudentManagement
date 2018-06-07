@@ -39,4 +39,9 @@ public class BangDiem implements Serializable {
     public void setDiem(int diem) {
         this.diem = diem;
     }
+
+    @Override
+    public String toString() {
+        return sinhVien.getTenSV() + " - " + monHoc.getTenMH() + " - " + diem;
+    }
 }

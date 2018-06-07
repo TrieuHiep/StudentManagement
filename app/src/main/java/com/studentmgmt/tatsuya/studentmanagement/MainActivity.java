@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         this.svdao = new SinhVienDAOImpl(new SQLiteConnector(this));
         this.monHocDAO = new MonHocDAOImpl(new SQLiteConnector(this));
         this.bangDiemDAO = new BangDiemDAOImpl(new SQLiteConnector(this));
+        initCase();
         initComponents();
     }
 
@@ -85,11 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCase() {
-        SVDAO svdao = new SinhVienDAOImpl(new SQLiteConnector(this));
-        MonHocDAO monHocDAO = new MonHocDAOImpl(new SQLiteConnector(this));
-        BangDiemDAO bangDiemDAO = new BangDiemDAOImpl(new SQLiteConnector(this));
-
-
         try {
             svdao.addSV(new SinhVien(1, "Nam", "nam@gmail.com"));
             svdao.addSV(new SinhVien(2, "Hiep", "hiep@gmail.com"));
